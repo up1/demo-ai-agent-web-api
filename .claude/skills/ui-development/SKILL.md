@@ -35,7 +35,7 @@ Before building, look in `mock-ui/` at the repo root for UI mockups (images: png
 - If a mockup conflicts with a story's acceptance criteria or the API spec, follow the story/spec and report the conflict. Never silently drop a mockup element; list anything you could not implement.
 - If a mockup is HTML/CSS, reuse its structure but rewrite it as semantic, accessible React components per `modern-web-guidance`; don't paste it verbatim.
 - If `mock-ui/` is missing or empty, continue from stories alone and say so in the report.
-- After building, run the dev server and compare against the mockup visually (screenshot if a browser tool is available); note differences.
+- After building, run the dev server and compare against the mockup visually (screenshot if a browser testing with DevTools is available); note differences.
 
 ## Steps
 1. Read approved stories, the spec, and the mockups above. List screens/states per story: loading, empty, error, success, validation errors (mockups often show only the happy state, so design the others consistently with the mockup style).
