@@ -1,6 +1,6 @@
 ---
 name: ui-development
-description: Generate and test a React + Vite + TypeScript web UI in ui/ from approved user stories, OpenAPI specs and mockups in mock-ui/, using Vitest and Testing Library and the modern-web-guidance skill. Use when asked to build the web UI, screens, or UI tests from stories.
+description: Generate and test a React + Vite + TypeScript web UI in ui/ from approved user stories, OpenAPI specs and mockups html and design.md and screen in mock-ui/, using Vitest and Testing Library and the modern-web-guidance skill. Use when asked to build the web UI, screens, or UI tests from stories.
 ---
 
 # User stories + API spec -> React UI
