@@ -40,6 +40,14 @@ requirement.md          mock-ui/ (optional mockups)
    │                              │
    └── changes-requested? ────────┘
        developer fixes blocker/major findings → re-review (max 2 rounds)
+   ▼                              ▼
+[6] security-reviewer         [6] security-reviewer
+    skill: web-security-review    skill: api-security-review
+    OWASP Top 10                  OWASP Top 10 + API Security Top 10
+    → reviews/ui-security.md      → reviews/api-security.md
+   │                              │
+   └── changes-requested? ────────┘
+       developer fixes critical/high findings → re-review (max 2 rounds)
 ```
 
 | # | Agent | Skill(s) | Input | Output |
@@ -49,14 +57,17 @@ requirement.md          mock-ui/ (optional mockups)
 | 3 | `ui-developer` | `modern-web-guidance`, `ui-development` | stories, spec, `mock-ui/` | `ui/` + tests |
 | 4 | `api-developer` | `api-development` | spec | `api/` + tests |
 | 5 | `code-reviewer` | `ui-code-review`, `api-code-review` | code, stories, spec | `reviews/*.md` with verdict |
+| 6 | `security-reviewer` | `web-security-review`, `api-security-review` | code, spec, running API (localhost) | `reviews/ui-security.md`, `reviews/api-security.md`: every OWASP category marked pass/fail/n/a/not verified |
+
+Code review (5) checks correctness, spec conformance, quality and basic safety. Security review (6) goes deeper: every OWASP category gets an explicit result, and the API is probed locally with hostile input.
 
 Rules that hold the pipeline together:
 
 - Only stories with `status: approved` are built.
 - The OpenAPI spec is the contract. Status codes and error messages in tests are copied from it.
-- The reviewer is read-only. It writes only the report, so it never reviews its own fixes.
+- Reviewers are read-only. They write only the report, so they never review their own fixes.
 - Story IDs (`US-001`) appear in the spec (`x-story`) and in test names, so each criterion can be traced to a test.
-- Done means tests pass, the build passes, and the review verdict is `approve`.
+- Done means tests pass, the build passes, and the code review and security review verdicts are `approve`.
 
 ## Repository layout
 
@@ -69,11 +80,13 @@ reviews/                     generated review reports
 ui/                          generated web app (feature-based)
 api/                         generated API (feature-based)
 .claude/
-  agents/                    story-analyst, ui-developer, api-developer, code-reviewer
+  agents/                    story-analyst, ui-developer, api-developer,
+                             code-reviewer, security-reviewer
   skills/                    story-analysis, api-spec, api-development, ui-development,
-                             ui-code-review, api-code-review
+                             ui-code-review, api-code-review,
+                             web-security-review, api-security-review
   commands/build-app.md      /build-app command
-  templates/review-report.md shared review report format
+  templates/                 review-report.md, security-report.md
 ```
 
 ## Feature-based structure of the generated code
@@ -121,7 +134,7 @@ ui/
    ```
 4. **Stage 1 pauses.** Read `stories/*.md` and `stories/_questions.md`. Answer the questions and tell Claude to approve the stories.
 5. The rest runs on its own: API spec, then UI and API builds, then reviews and fix rounds.
-6. Read the final report, and `reviews/ui-review.md` and `reviews/api-review.md`.
+6. Read the final report and the reviews: `reviews/ui-review.md`, `reviews/api-review.md`, `reviews/ui-security.md`, `reviews/api-security.md`.
 
 ### Option B: stage by stage
 
@@ -134,6 +147,8 @@ Use the api-developer agent in implement mode
 Use the ui-developer agent to build the UI
 Use the code-reviewer agent to review api/
 Use the code-reviewer agent to review ui/
+Use the security-reviewer agent to review api/ (OWASP Top 10 + API Security Top 10)
+Use the security-reviewer agent to review ui/ (OWASP Top 10)
 ```
 
 ## Run the generated app

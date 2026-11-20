@@ -15,4 +15,6 @@ Run these stages in order, using the named subagents. Stop and report if a stage
    - `api-developer` in *implement mode* for `api/`
 4. **Review** — `code-reviewer` for `ui/` and for `api/` (two separate runs).
 5. **Fix loop** — if a verdict is `changes-requested`, send the review file to the matching developer agent, then re-review. Maximum 2 rounds; then report remaining findings to the user.
-6. **Report** — per stage: what was produced, test/build results, review verdicts, anything unresolved.
+6. **Security review** (after code review is `approve`) — `security-reviewer` for `ui/` (`web-security-review`, OWASP Top 10) and for `api/` (`api-security-review`, OWASP Top 10 + API Security Top 10). Reports go to `reviews/ui-security.md` and `reviews/api-security.md`.
+7. **Security fix loop** — if `changes-requested` (any critical/high), send the report to the matching developer agent, re-run tests and the code review for touched areas, then re-review security. Maximum 2 rounds.
+8. **Report** — per stage: what was produced, test/build results, review verdicts, anything unresolved.

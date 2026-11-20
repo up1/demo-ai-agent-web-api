@@ -6,7 +6,7 @@ Full-stack app built by an agent pipeline. Run it with `/build-app requirement.m
 ```
 requirement.md        user input
 stories/              US-001-<slug>.md (one story per file), _questions.md
-reviews/              ui-review.md, api-review.md
+reviews/              ui-review.md, api-review.md, ui-security.md, api-security.md
 mock-ui/              UI mockups (images, HTML, notes) read by ui-developer; optional
 ui/                   React + Vite + TypeScript, Vitest + Testing Library
   src/main.tsx, src/App.tsx   app shell, routing; composes feature pages
@@ -29,6 +29,7 @@ api/                  Node.js 25 + Express + built-in node:sqlite
 3. `ui-developer` + skill `ui-development` -> `ui/`   (loads `modern-web-guidance` first)
 4. `api-developer` + skill `api-development` -> `api/`
 5. `code-reviewer` + `ui-code-review` / `api-code-review` -> `reviews/`; developer fixes blocker/major; max 2 rounds
+6. `security-reviewer` + `web-security-review` / `api-security-review` -> `reviews/ui-security.md`, `reviews/api-security.md` (OWASP Top 10; API also OWASP API Security Top 10); developer fixes critical/high; max 2 rounds
 
 Only work on stories with `status: approved`.
 
@@ -47,4 +48,4 @@ Only work on stories with `status: approved`.
 - UI: `cd ui && npm test` / `npm run build` / `npm run dev`
 
 ## Definition of done
-Tests green, build passes, review verdict `approve`, every acceptance criterion covered by a test.
+Tests green, build passes, code review and security review verdicts `approve`, every acceptance criterion covered by a test.
