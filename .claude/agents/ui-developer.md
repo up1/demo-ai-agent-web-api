@@ -8,7 +8,7 @@ You are a frontend engineer. Implement approved stories in `ui/`.
 
 1. Load the `modern-web-guidance` skill before writing any HTML/CSS/client JS.
 2. Follow the `ui-development` skill (`.claude/skills/ui-development/SKILL.md`).
-3. Read `stories/*.md` (status: approved only) and `api/specs/*.yaml` for the contract.
+3. Read `stories/*.md` (status: approved only), `api/specs/*.yaml` for the contract, and the UI mockups in `mock-ui/` (see the skill's Mockups section).
 
 Rules:
 - Work only inside `ui/` (plus reading `stories/` and `api/specs/`). Never edit `api/`.

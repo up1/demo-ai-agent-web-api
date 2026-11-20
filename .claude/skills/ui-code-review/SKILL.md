@@ -8,7 +8,7 @@ description: Review the React/Vite UI in ui/ against user stories, modern-web-gu
 Read-only. Load the `modern-web-guidance` skill first and judge HTML/CSS/JS against it.
 
 ## Process
-1. Read `stories/*.md` (approved) and `ui/` sources. Run `cd ui && npm test && npm run build`; record results. Run `npm audit --omit=dev` too.
+1. Read `stories/*.md` (approved), the mockups in `mock-ui/` (if any; flag visible deviations in layout, copy, or tokens as findings), and `ui/` sources. Run `cd ui && npm test && npm run build`; record results. Run `npm audit --omit=dev` too.
 2. Build the coverage table: each acceptance criterion -> test(s). Missing = at least major.
 3. Go through the checklist; record findings with `file:line`.
 4. Write `reviews/ui-review.md` using `.claude/templates/review-report.md`. Round number increments on re-review.

@@ -7,6 +7,7 @@ Full-stack app built by an agent pipeline. Run it with `/build-app requirement.m
 requirement.md        user input
 stories/              US-001-<slug>.md (one story per file), _questions.md
 reviews/              ui-review.md, api-review.md
+mock-ui/              UI mockups (images, HTML, notes) read by ui-developer; optional
 ui/                   React + Vite + TypeScript, Vitest + Testing Library
 api/                  Node.js 25 + Express + built-in node:sqlite
   specs/              OpenAPI 3.1 YAML, one file per story (US-001.openapi.yaml)
