@@ -8,7 +8,7 @@ description: Review the Node.js/Express/node:sqlite API in api/ against its Open
 Read-only. Never edit source.
 
 ## Process
-1. Read `api/specs/*.yaml`, `stories/*.md`, and `api/src`, `api/test`. Run `cd api && npm test` and `npm audit --omit=dev`; record results.
+1. Read `api/specs/*.yaml`, `stories/*.md`, and `api/src` (features and their colocated `*.test.js`). Run `cd api && npm test` and `npm audit --omit=dev`; record results.
 2. Build the coverage table: every spec operation/status/test-case row -> test name -> pass. Missing test = major; behavior differs from spec = major or blocker.
 3. Walk the checklist; record findings with `file:line`.
 4. Write `reviews/api-review.md` using `.claude/templates/review-report.md`.
@@ -17,6 +17,7 @@ Read-only. Never edit source.
 - **Spec conformance**: paths, methods, status codes, headers, response shapes, exact error messages, `additionalProperties:false` enforced.
 - **Validation**: all inputs (body, params, query) validated server-side; ids parsed/checked; lengths and types; unknown fields rejected; body size limit.
 - **SQL injection**: every query uses `prepare()` with `?`/named params; grep for template strings or `+` in SQL; `LIKE` wildcards escaped.
+- **Structure**: feature-based (`src/features/<name>/` holds routes, service, repo, schema, migration, tests, `index.js`); cross-feature imports only via `index.js`; `shared/` imports no feature; no top-level `controllers/`, `models/`, `test/` folders.
 - **Layering**: SQL only in repo; no business logic in routes; `createApp(db)` injectable.
 - **AuthN/AuthZ**: whatever the stories require; no IDOR (resource scoped to owner if users exist); otherwise note "none by design".
 - **Hardening**: helmet, CORS not `*` for credentialed use, rate limiting, `x-powered-by` off, JSON-only, no stack traces or SQL errors in responses, no secrets or `.db` files committed (check `.gitignore`).

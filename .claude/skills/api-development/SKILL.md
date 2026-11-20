@@ -10,14 +10,19 @@ Node >= 25, ESM. Only deps: `express`, `helmet`, `cors`, `express-rate-limit`. N
 ## Scaffold (if `api/package.json` missing)
 ```
 api/package.json   {"type":"module","scripts":{"start":"node src/server.js","test":"node --test"},"engines":{"node":">=25"}}
-api/src/db.js      openDb(path=process.env.DB_PATH ?? './data.db') -> DatabaseSync; runs migrations; PRAGMA foreign_keys=ON; journal_mode=WAL
-api/src/app.js     createApp({db}) -> express app (helmet, cors, express.json({limit:'100kb'}), rate limit, routes, 404, error handler)
-api/src/server.js  createApp(openDb()).listen(PORT ?? 3000)
-api/src/features/<feature>/{routes,service,repo,schema}.js
-api/src/middleware/{error,validate}.js
-api/test/<feature>.test.js
+api/src/app.js     createApp({db}) -> express app (helmet, cors, express.json({limit:'100kb'}), rate limit, mounts each feature router, 404, error handler); calls each feature's migrate(db)
+api/src/server.js  createApp({db: openDb()}).listen(PORT ?? 3000)
+api/src/shared/db.js          openDb(path=process.env.DB_PATH ?? './data.db') -> DatabaseSync; PRAGMA foreign_keys=ON; journal_mode=WAL
+api/src/shared/errors.js      AppError(status, code, message, details)
+api/src/shared/middleware/    error.js, notFound.js
+api/src/shared/test-utils.js  startTestServer() -> {baseUrl, close} using :memory: db, port 0
+api/src/features/<feature>/
+  index.js              public surface: createRouter(db), migrate(db)
+  <feature>.routes.js   <feature>.service.js   <feature>.repo.js
+  <feature>.schema.js   <feature>.migration.js <feature>.test.js
 ```
-`createApp` takes the db as a parameter so tests use `new DatabaseSync(':memory:')`.
+Group by feature, not by layer. A feature imports only `shared/` and other features' `index.js`; `shared/` never imports features. Feature name = resource (`notes`), not story ID (a story may touch several features, a feature may span several stories).
+`createApp` takes the db as a parameter so tests use `new DatabaseSync(':memory:')`. `node --test` discovers `*.test.js` inside features automatically.
 
 ## Layering
 - **routes**: parse request, call schema validator, call service, shape response. No SQL.
@@ -29,9 +34,9 @@ api/test/<feature>.test.js
 
 ## Steps
 1. Read `api/specs/*.yaml`; checklist every operation, status, exact message.
-2. Write migrations (`CREATE TABLE IF NOT EXISTS`, constraints, indexes for searched columns). Timestamps as ISO strings.
+2. Write each feature's `<feature>.migration.js` (`CREATE TABLE IF NOT EXISTS`, constraints, indexes for searched columns). Timestamps as ISO strings.
 3. Implement feature by feature, in story order.
-4. Tests (`node --test`, `node:assert/strict`): start app on port 0 with in-memory db, call with `fetch`. One test per spec test-case row; name format `US-001 TC-03: rejects title over 100 chars`. Assert status, content-type, and body shape/messages verbatim.
+4. Tests colocated in `src/features/<feature>/<feature>.test.js` (`node --test`, `node:assert/strict`): start app via `shared/test-utils.js` on port 0 with in-memory db, call with `fetch`. One test per spec test-case row; name format `US-001 TC-03: rejects title over 100 chars`. Assert status, content-type, and body shape/messages verbatim.
 5. Add tests for security basics: SQL metacharacters in search/ids are treated as data; oversized body -> 413/400; unknown JSON fields rejected.
 6. Run `npm test`. Fix until green. Also boot `node src/server.js` once and curl a route to confirm it really starts.
 

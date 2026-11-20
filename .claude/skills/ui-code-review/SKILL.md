@@ -19,7 +19,8 @@ Read-only. Load the `modern-web-guidance` skill first and judge HTML/CSS/JS agai
 - **Accessibility**: labels for every input, heading order, keyboard operability, focus management after create/delete/dialog, `aria-live` for status, contrast, alt text, no click handlers on non-interactive elements.
 - **React**: effect deps correct and cleanup/abort on fetch, stable `key`s, no derived state copied into state, no state set during render, controlled inputs, no needless re-render hot spots, error boundary for render crashes.
 - **Security**: no `dangerouslySetInnerHTML`/`innerHTML` with user data, no `javascript:` URLs, no secrets/tokens in bundle or localStorage without need, API base not hard-coded to localhost.
-- **API usage**: all calls through `src/api/`, handles non-2xx per spec error shape, double-submit prevented.
+- **Structure**: feature-based (`src/features/<name>/` with api, types, components, hooks, page, tests, `index.ts`); no imports into another feature's internals; `shared/` imports no feature; no top-level `components/`/`hooks/` dumping grounds; tests colocated.
+- **API usage**: all calls through each feature's `api.ts` on `shared/api/http.ts` (only `http.ts` uses fetch), handles non-2xx per spec error shape, double-submit prevented.
 - **Tests**: assert user-visible behavior (role/label queries), no snapshot-only tests, no tests that pass without the feature, story IDs in names, async handled with `findBy`/`waitFor`.
 - **Build/quality**: TypeScript strict, no `any` without reason, no console noise, no unused deps, bundle sane.
 
