@@ -35,7 +35,7 @@ Before building, look in `mock-ui/` at the repo root for UI mockups (images: png
 - If a mockup conflicts with a story's acceptance criteria or the API spec, follow the story/spec and report the conflict. Never silently drop a mockup element; list anything you could not implement.
 - If a mockup is HTML/CSS, reuse its structure but rewrite it as semantic, accessible React components per `modern-web-guidance`; don't paste it verbatim.
 - If `mock-ui/` is missing or empty, continue from stories alone and say so in the report.
-- After building, run the dev server and compare against the mockup visually (screenshot if a browser testing with DevTools is available); note differences.
+- After building, you MUST run the **Browser verification loop** below; it is not optional.
 
 ## Steps
 1. Read approved stories, the spec, and the mockups above. List screens/states per story: loading, empty, error, success, validation errors (mockups often show only the happy state, so design the others consistently with the mockup style).
@@ -43,7 +43,20 @@ Before building, look in `mock-ui/` at the repo root for UI mockups (images: png
 3. Build components: semantic HTML, labelled inputs, visible focus, `aria-live` for async messages, buttons for actions, links for navigation. Client-side validation mirrors the spec limits (`maxLength`, required) but always display server errors too.
 4. Safety: never `dangerouslySetInnerHTML` with user content; no secrets; encode URL params.
 5. Tests: mock the api client (not fetch internals). One test per acceptance criterion; name `US-001 AC-2: shows error when title is empty`. Query by role/label, use `userEvent`.
-6. Run `npm test` and `npm run build`. Fix until both pass; then start `npm run dev` briefly to confirm it boots.
+6. Run `npm test` and `npm run build`. Fix until both pass.
+7. Run the Browser verification loop below.
+
+## Browser verification loop (required)
+Use the `browser-testing-with-devtools` skill (Chrome DevTools MCP) on the real running UI; load `modern-web-guidance` as the reference for best practice. If the DevTools MCP is not configured, follow that skill's setup; if it still cannot run, say so in the report (never claim a visual match you did not check).
+1. Start the API (`cd api && npm start`, if present) and the UI (`cd ui && npm run dev`). Open the page(s) in the browser.
+2. Check, per screen and per state (loading, empty, error, success, validation):
+   - **Mockup match** (`mock-ui/`): screenshot vs `screen.png`; computed styles vs `code.html`/`DESIGN.md` (colors, fonts, spacing, radii); layout, hierarchy, copy.
+   - **modern-web-guidance**: semantic HTML, native elements (`<dialog>`, form validation), labels, focus order/visible focus, contrast, keyboard use, responsive layout.
+   - **Runtime health**: no console errors/warnings, no failed or unexpected network requests (calls go to `/api` per spec), no layout shift or slow LCP/INP.
+3. Write a mismatch list (what, where, expected vs actual). If empty, finish.
+4. If not matching: fix the code (and tests/tokens as needed), re-run `npm test` and `npm run build`, then repeat from step 2. Max 3 rounds; list unresolved items and why.
+5. Stop the dev servers when done.
 
 ## Report
 Table: story AC -> test name -> pass/fail, plus real test/build summary lines.
+Browser verification: per screen/state, mockup match and modern-web-guidance result, mismatches found and fixed per round, remaining differences.
